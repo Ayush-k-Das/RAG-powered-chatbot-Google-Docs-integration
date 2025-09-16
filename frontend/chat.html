@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RAG Chatbot - Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RAG Chatbot</h1>
+        <p>Ask anything based on your ingested Google Docs.</p>
+
+        <form id="chatForm">
+            <input type="text" id="userQuery" placeholder="Type your question here" required>
+            <button type="submit">Send</button>
+        </form>
+
+        <div id="chatResponse" style="margin-top: 20px; text-align: left;"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('chatForm');
+        const responseDiv = document.getElementById('chatResponse');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('userQuery').value;
+            if(!query) return;
+
+            responseDiv.innerHTML = "<em>Processing...</em>";
+
+            const formData = new FormData();
+            formData.append("query", query);
+
+            try {
+                const res = await fetch("/chat_query", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+
+                if(data.error){
+                    responseDiv.innerHTML = `<b>Error:</b> ${data.error}`;
+                } else {
+                    responseDiv.innerHTML = `<b>You:</b> ${data.query}<br><b>Bot:</b> ${data.response.replace(/\n/g,"<br>")}`;
+                }
+            } catch (err) {
+                responseDiv.innerHTML = `<b>Unexpected error:</b> ${err}`;
+            }
+        });
+    </script>
+</body>
+</html>
