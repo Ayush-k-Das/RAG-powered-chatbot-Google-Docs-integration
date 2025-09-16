@@ -1,0 +1,15 @@
+FastAPI
+
+Uvicorn
+
+google-auth-oauthlib
+
+google-api-python-client
+
+python-dotenv
+
+sentence-transformers
+
+faiss-cpu
+
+numpy
